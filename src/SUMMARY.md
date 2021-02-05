@@ -121,7 +121,15 @@
 - [Implement Refcell](ch21/intro_impl_refcell.md)
 
 - [Implement Mutex](ch22/intro_impl_mutex.md)
-  - [Poison]()
+  - [Creating an Initial Layout](ch22/impl_mutex_initial_layout.md)
+  - [Implementing MutexGuard](ch22/impl_mutex_guard.md)
+  - [The UnsafeCell type](ch22/impl_mutex_unsafe_cell.md)
+  - [Implementing locking for our Mutex](ch22/impl_mutex_locking.md)
+  - [Should our mutex be ?Sized, Sync, Send](ch22/impl_mutex_sized_sync_send.md)
+  - [A fully working Mutex](ch22/impl_mutex_review_no_poison.md)
+  - [Poisoning in our Mutex](ch22/impl_mutex_poison.md)
+  - [Managing what happens when poisoning occurs](ch22/impl_mutex_poison_error.md)
+  - [A working Mutex With poisoning](ch22/impl_mutex_final.md)
   - [Manually Drop]()
 
 - [Rust Issues]()
@@ -129,7 +137,7 @@
 
 - [Future Rust Improvements]()
 
-- [Undefined behaviour]()
+- [Undefined behavior]()
 
 - [Conventions]()
 
