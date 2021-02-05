@@ -1,0 +1,10 @@
+[book]
+authors = ["Joshua Spaul"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Rust In Detail"
+
+
+[rust]
+edition = "2018"
