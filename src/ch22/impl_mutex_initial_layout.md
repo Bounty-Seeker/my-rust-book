@@ -11,6 +11,10 @@ The data field shall hold our data while the lock_mech struct will handle our ac
 
 Our mutex will hence need some functions
 
+```rust
+{{#rustdoc_include ./code/impl_mutex_initial_layout/mutex_struct_init.rs}}
+```
+
  TODO  /// Create a mutex for some data. new(data:T) -> Mutex<T> , 
        /// Tries to lock, spins until we get access to data. lock(&mut self) -> &mut T
        /// Tries to lock but returns with error if unable to get immediate access try_lock(&mut self) -> Result<&mut T, error type>
@@ -20,7 +24,11 @@ TODO impl !sync, !send, Sized, pub
 
 By also creating the following associated method for our lock_mech struct we can write our initial functions.
 
-TODO /// Create new lock_mech for a mutex new_lock()-> Lock_Mech
+```rust
+{{#rustdoc_include ./code/impl_mutex_initial_layout/mutex_initial_layout.rs:here}}
+```
+
+TODO /// Create  Myjhdhjnew lock_mech for a mutex new_lock()-> Lock_Mech
 /// Tries to lock, spins until we get access to data. lock(&mut self) -> &mut T
 /// Tries to lock but returns with error if unable to get immediate access try_lock(&mut self) -> Result<&mut T, error type>
 /// 

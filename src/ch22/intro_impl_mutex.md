@@ -1,6 +1,7 @@
 # Implementing A Mutex
 
 TODO check title and section titles make sense.
+TODO check each import is code to library code
 
 In this chapter we will be implementing a Mutex and it will be a messy complicated journey. On this journey we will explore atomics TODO link, Unsafe cell TODO link and how we can deal with panics.
 
