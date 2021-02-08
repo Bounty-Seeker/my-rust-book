@@ -1,12 +1,14 @@
+#![feature(negative_impls)]
 
-pub struct Mutex<T> : Sized {
+pub struct Mutex<T : Sized> {
     lock_mech : LockMech,
     data : T,
 }
 
-struct LockMech
+struct LockMech;
 
-Unsafe impl<T> !Send, !Sync for Mutex<T>
+impl<T> !Send for Mutex<T> {}
+impl<T> !Sync for Mutex<T> {}
 
 // ANCHOR: here
 impl<T:Sized> Mutex<T> {
@@ -22,7 +24,7 @@ impl<T:Sized> Mutex<T> {
     /// Tries to lock, spins until we get access to data.
     fn lock(&mut self) -> &mut T {
         self.lock_mech.lock();
-        &mut data,
+        &mut self.data
     }
 
     /// Tries to lock but returns with None if unable to get immediate access 
@@ -36,7 +38,7 @@ impl<T:Sized> Mutex<T> {
     }
 
     /// Consume the mutex and return the inner T.
-    fn into_inner(Self) -> T {
+    fn into_inner(self) -> T {
         self.data
     }
 }
@@ -61,7 +63,7 @@ impl LockMech {
     }
 
     /// Unlocks the lock.
-    fn unlock(&mut Self) {
+    fn unlock(&mut self) {
         todo!()
     }
 }

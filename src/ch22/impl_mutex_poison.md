@@ -15,13 +15,25 @@ If when the MutexGuard is dropped we check if the thread is panicking. If it is 
 In order to implement this we will first need to add an AtomicBool to the Mutex that tracks whether the inner data is poisoned or not. TODO Why AtomicBool
 
 TODO add AtomicBool and change setup funcs
+```rust
+{{#rustdoc_include ./code/impl_mutex_poison/mutex_poison_init.rs:mutex}}
+```
+
+```rust
+{{#rustdoc_include ./code/impl_mutex_poison/mutex_poison_init.rs:mutex_fun}}
+```
+
 
 This should allow us to record if it is possible that the inner data has been poisoned.
 And we need to alter the drop TODO rusty method for the MutexGuard to check.
 
 TODO drop method
+```rust
+{{#rustdoc_include ./code/impl_mutex_poison/mutex_poison_init.rs:mut_guard_drop}}
+```
 
-And we need to alter the locking functions. We will discuss how we can report this to the user in the next section for now we will panic!().
+
+And we need to alter the locking functions. We will discuss how we can report this to the user in the next section for now we will just panic!().
 
 TODO locking method change
 
@@ -34,8 +46,27 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 Before we implement this we need to ask ourselves some questions: TODO Double panic, catch_unwind
 
 TODO implement changes to MutexGuard and functions
+```rust
+{{#rustdoc_include ./code/impl_mutex_poison/mutex_poison.rs:mut_guard}}
+```
 
-TODO Send questions
+```rust
+{{#rustdoc_include ./code/impl_mutex_poison/mutex_poison.rs:mut_gu_new}}
+```
+
+```rust
+{{#rustdoc_include ./code/impl_mutex_poison/mutex_poison.rs:mut_gu_drop}}
+```
+
+
+TODO Send questions check all correct in previous chapters
+
+We also need the MutexGuard !Send TODO rusty in all cases. This is as we are now storing a thread specific data in the MutexGuard.
+
+TODO make not Send
+```rust
+{{#rustdoc_include ./code/impl_mutex_poison/mutex_poison.rs:mutex_guard_send_sync}}
+```
 
 TODO why safe
 

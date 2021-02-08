@@ -1,11 +1,22 @@
+#![feature(negative_impls)]
+use std::ops::{Drop, Deref, DerefMut};
+use std::cell::UnsafeCell;
 
-pub Struct Mutex<T> : Sized {
+// ANCHOR: lock_mech
+use std::sync::atomic::{AtomicBool, Ordering};
+
+// --snip--
+
+//ANCHOR_END: lock_mech
+
+pub struct Mutex<T : Sized> {
     lock_mech : LockMech,
     data : UnsafeCell<T>,
 }
 
 
-Unsafe impl<T> !Send, !Sync for Mutex<T>
+impl<T> !Send for Mutex<T> {}
+impl<T> !Sync for Mutex<T> {}
 
 impl<T:Sized> Mutex<T> {
 
@@ -18,13 +29,13 @@ impl<T:Sized> Mutex<T> {
     }
 
     /// Tries to lock, spins until we get access to data.
-    fn lock(&'a self) -> MutexGuard<'a, T> {
+    fn lock<'a>(&'a self) -> MutexGuard<'a, T> {
         self.lock_mech.lock();
         MutexGuard::new(self)
     }
 
     /// Tries to lock but returns with None if unable to get immediate access 
-    fn try_lock(&'a self) -> Option<MutexGuard<'a, T>> {
+    fn try_lock<'a>(&'a self) -> Option<MutexGuard<'a, T>> {
         if self.lock_mech.try_lock() {
             Some(MutexGuard::new(self))
         }
@@ -35,15 +46,15 @@ impl<T:Sized> Mutex<T> {
 
     /// Consume the mutex and return the inner T.
     fn into_inner(self) -> T {
-        self.data
+        self.data.into_inner()
     }
 }
 
 
 //ANCHOR: lock_mech
-    struct LockMech {
-        locked : AtomicBool,
-    }
+struct LockMech {
+    locked : AtomicBool
+}
 //ANCHOR_END: lock_mech
 
 
@@ -51,43 +62,45 @@ impl LockMech {
 
 //ANCHOR:lock_mech_new
     /// Create a LockMech.
-    fn new() -> LockMech {
+    fn new()-> LockMech {
         LockMech {
-            locked : AtomicBool::new(False),
+            locked : AtomicBool::new(false)
         }
     }
 //ANCHOR_END: lock_mech_new
 
-///ANCHOR: lock_mech_lock
+//ANCHOR: lock_mech_lock
     /// Tries to lock, spins until we get access to data.
     fn lock(&self) {
-        while !self.try_lock()
+        while !self.try_lock() {}
     }
 
     /// Tries to lock but returns with False if unable to
     /// get immediate access. If it can get the lock we return
     /// True.
     fn try_lock(&self) -> bool {
-        self.locked.compare_and_swap(&self, False, True, order: Ordering)
+        //TODO check me, change func
+        self.locked.compare_and_swap(false, true, Ordering::SeqCst)
     }
 //ANCHOR_END: lock_mech_lock
 
 //ANCHOR: lock_mech_unlock
-//TODO should this be runnable and others
+//TODO should this be runnable and others, CHECK ALL ORDERINGS
     /// Unlocks the lock.
     fn unlock(&self) {
-        self.locked.set(False, Ordering)
+        self.locked.store(false, Ordering::SeqCst)
     }
-}
 //ANCHOR_END: lock_mech_unlock
+}
 
 
-Struct MutexGuard<'a, T:Sized> {
+
+struct MutexGuard<'a, T:Sized> {
     mu : &'a Mutex<T>,
 }
 
-Unsafe impl<'a, T> !Send, !Sync for MutexGuard<'a,T>
-
+impl<'a, T> !Send for MutexGuard<'a,T> {}
+impl<'a, T> !Sync for MutexGuard<'a,T> {}
 
 impl<'a, T:Sized> MutexGuard<'a,T> {
 
@@ -109,13 +122,21 @@ impl<'a, T:Sized> Deref for MutexGuard<'a,T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
-        & (*self.mu.data.get())
+        // SAFETY: safe as only one MutexGuard at any time and
+        // & of MutexGuard ensures we have shared access
+        // Also function lifetimes ensure we can't use after we
+        // lose the MutexGuard
+        unsafe{& *self.mu.data.get()}
     }
 }
 
 impl<'a, T:Sized> DerefMut for MutexGuard<'a,T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut (*self.mu.data.get())
+        // SAFETY: safe as only one MutexGuard at any time and
+        // &mut of MutexGuard ensures we have unique access
+        // Also function lifetimes ensure we can't use after we
+        // lose the MutexGuard
+        unsafe{&mut *self.mu.data.get()}
     }
 }
 

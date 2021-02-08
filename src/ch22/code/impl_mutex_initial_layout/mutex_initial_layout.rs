@@ -1,12 +1,16 @@
-pub struct Mutex<T> : Sized {
+//ANCHOR: here
+
+#![feature(negative_impls)]
+
+pub struct Mutex<T : Sized> {
     lock_mech : LockMech,
     data : T,
 }
 
-struct LockMech
+struct LockMech;
 
-//ANCHOR: here
-Unsafe impl<T> !Send, !Sync for Mutex<T>
+impl<T> !Send for Mutex<T> {}
+impl<T> !Sync for Mutex<T> {}
 
 impl<T:Sized> Mutex<T> {
 
@@ -26,7 +30,7 @@ impl<T:Sized> Mutex<T> {
     }
 
     /// Consume the mutex and return the inner T.
-    fn into_inner(Self) -> T {
+    fn into_inner(self) -> T {
         todo!()
     }
 }

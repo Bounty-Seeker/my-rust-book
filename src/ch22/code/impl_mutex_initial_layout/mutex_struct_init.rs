@@ -1,6 +1,6 @@
-pub struct Mutex<T> : Sized {
+pub struct Mutex<T : Sized> {
     lock_mech : LockMech,
-    data : T,
+    data : T
 }
 
-struct LockMech
+struct LockMech;
