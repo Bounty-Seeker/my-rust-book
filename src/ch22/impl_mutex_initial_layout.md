@@ -31,17 +31,14 @@ By also creating the following associated method for our lock_mech struct we can
 TODO /// Create  Myjhdhjnew lock_mech for a mutex new_lock()-> Lock_Mech
 /// Tries to lock, spins until we get access to data. lock(&mut self) -> &mut T
 /// Tries to lock but returns with error if unable to get immediate access try_lock(&mut self) -> Result<&mut T, error type>
-/// 
+///
 
 Using the first three functions we can complete the bodies of our associated methods on the Mutex struct.
 
-TODO  Previous functions completed
+```rust
+{{#rustdoc_include ./code/impl_mutex_initial_layout/mutex_initial_layout2.rs:here}}
+```
 
 This Mutex is already looking good and we have only just begun. However we already have several problems that we should get to before go further.
 
 Full code at this point:
-
-
-
-
-

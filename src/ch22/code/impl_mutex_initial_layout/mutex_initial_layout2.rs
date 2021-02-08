@@ -1,13 +1,14 @@
 
-pub Struct Mutex<T> : Sized {
+pub struct Mutex<T> : Sized {
     lock_mech : LockMech,
     data : T,
 }
 
-Struct LockMech
+struct LockMech
 
 Unsafe impl<T> !Send, !Sync for Mutex<T>
 
+// ANCHOR: here
 impl<T:Sized> Mutex<T> {
 
     /// Create a mutex for some data.
@@ -64,3 +65,4 @@ impl LockMech {
         todo!()
     }
 }
+// ANCHOR_END: here

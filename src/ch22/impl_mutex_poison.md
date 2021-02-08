@@ -33,7 +33,6 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 
 Before we implement this we need to ask ourselves some questions: TODO Double panic, catch_unwind
 
-
 TODO implement changes to MutexGuard and functions
 
 TODO Send questions

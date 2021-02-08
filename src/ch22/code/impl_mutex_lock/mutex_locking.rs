@@ -5,7 +5,6 @@ pub Struct Mutex<T> : Sized {
 }
 
 
-
 Unsafe impl<T> !Send, !Sync for Mutex<T>
 
 impl<T:Sized> Mutex<T> {
@@ -41,21 +40,25 @@ impl<T:Sized> Mutex<T> {
 }
 
 
-
-    Struct LockMech {
+//ANCHOR: lock_mech
+    struct LockMech {
         locked : AtomicBool,
     }
+//ANCHOR_END: lock_mech
+
 
 impl LockMech {
 
+//ANCHOR:lock_mech_new
     /// Create a LockMech.
     fn new() -> LockMech {
         LockMech {
             locked : AtomicBool::new(False),
         }
     }
+//ANCHOR_END: lock_mech_new
 
-
+///ANCHOR: lock_mech_lock
     /// Tries to lock, spins until we get access to data.
     fn lock(&self) {
         while !self.try_lock()
@@ -67,13 +70,16 @@ impl LockMech {
     fn try_lock(&self) -> bool {
         self.locked.compare_and_swap(&self, False, True, order: Ordering)
     }
+//ANCHOR_END: lock_mech_lock
 
+//ANCHOR: lock_mech_unlock
+//TODO should this be runnable and others
     /// Unlocks the lock.
     fn unlock(&self) {
         self.locked.set(False, Ordering)
     }
 }
-
+//ANCHOR_END: lock_mech_unlock
 
 
 Struct MutexGuard<'a, T:Sized> {

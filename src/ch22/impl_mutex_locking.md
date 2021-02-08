@@ -8,19 +8,31 @@ As mentioned at the beginning of the chapter, modern OSs offer features to make 
 We shall use the AtomicBool TODO rusty type as the core of our lock. When no one has a MutexGuard the bool will be False and when one exists it will be True.
 
 TODO make LockMech
+```rust
+{{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech}}
+```
 
 For the new TODO rusty method  we will simply require the new TODO method of  AtomicBool TODO with value False.
 
 TODO new method
+```rust
+{{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_new}}
+```
 
 The unlock function is also relatively simple as we will simply use the store TODO rusty method from the AtomicBool. We will talk about the ordering in a moment.
 
 TODO unlock function
+```rust
+{{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_unlock}}
+```
 
 Now we need to do the lock functions. The lock functions we need to be more complex as the methods must read the bool and if the bool is False we set it to true then alert us to this action but if the bool is True then we do nothing and alert ourselves to the fact. All of this must be done atomically.
 This  can be done with compare_and_swap TODO rusty method with current set to False and new set to True.
 
 TODO lock functions
+```rust
+{{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_lock}}
+```
 
 TODO orderings
 

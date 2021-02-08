@@ -18,15 +18,14 @@ impl<T:Sized> Mutex<T> {
         }
     }
 
-// ANCHOR: here2
     /// Tries to lock, spins until we get access to data.
-    fn lock(&'a mut self) -> MutexGuard<'a, T> {
+    fn lock(&'a self) -> MutexGuard<'a, T> {
         self.lock_mech.lock();
         MutexGuard::new(self)
     }
 
     /// Tries to lock but returns with None if unable to get immediate access 
-    fn try_lock(&'a mut self) -> Option<MutexGuard<'a, T>> {
+    fn try_lock(&'a self) -> Option<MutexGuard<'a, T>> {
         if self.lock_mech.try_lock() {
             Some(MutexGuard::new(self))
         }
@@ -34,13 +33,15 @@ impl<T:Sized> Mutex<T> {
             None
         }
     }
-// ANCHOR_END: here2
+
 
     /// Consume the mutex and return the inner T.
     fn into_inner(self) -> T {
         self.data
     }
 }
+
+// ANCHOR: here
 
 impl LockMech {
 
@@ -50,38 +51,39 @@ impl LockMech {
     }
 
     /// Tries to lock, spins until we get access to data.
-    fn lock(&mut self) {
+    fn lock(& self) {
         todo!()
     }
 
     /// Tries to lock but returns with False if unable to
     /// get immediate access. If it can get the lock we return
     /// True.
-    fn try_lock(&mut self) -> bool {
+    fn try_lock(& self) -> bool {
         todo!()
     }
 
     /// Unlocks the lock.
-    fn unlock(&mut self) {
+    fn unlock(& self) {
         todo!()
     }
 }
 
 
-//ANCHOR: here
 struct MutexGuard<'a, T:Sized> {
-    mu : &'a mut Mutex<T>,
+    mu : &'a Mutex<T>,
 }
 
 unsafe impl<'a, T> !Send, !Sync for MutexGuard<'a,T>
 
 impl<'a, T:Sized> MutexGuard<'a,T> {
-    fn new(mu : &'a mut Mutex<T>) -> MutexGuard<'a, T> {
+    fn new(mu : &'a Mutex<T>) -> MutexGuard<'a, T> {
         MutexGuard {
             mu
         }
     }
 }
+
+//ANCHOR_END: here
 
 impl<'a, T:Sized> Drop for MutexGuard<'a,T> {
     fn drop(&mut self) {
@@ -102,7 +104,6 @@ impl<'a, T:Sized> DerefMut for MutexGuard<'a,T> {
         &mut (*self.mu.data.get())
     }
 }
-//ANCHOR_END: here
 
 
 

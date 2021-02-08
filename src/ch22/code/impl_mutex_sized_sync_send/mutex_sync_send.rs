@@ -4,9 +4,10 @@ pub Struct Mutex<T> : Sized {
     data : UnsafeCell<T>,
 }
 
+//ANCHOR: mutex_send_sync
 Unsafe impl<T : !Send> !Send, !Sync for Mutex<T>
 Unsafe impl<T : Send> Send, Sync for Mutex<T>
-
+//ANCHOR_END: mutex_send_sync
 
 impl<T:Sized> Mutex<T> {
 
@@ -40,9 +41,7 @@ impl<T:Sized> Mutex<T> {
     }
 }
 
-
-
-    Struct LockMech {
+    struct LockMech {
         locked : AtomicBool,
     }
 
@@ -76,14 +75,16 @@ impl LockMech {
 
 
 
-Struct MutexGuard<'a, T:Sized> {
+struct MutexGuard<'a, T:Sized> {
     mu : &'a Mutex<T>,
 }
 
+//ANCHOR: mutex_guard_send_sync
+//Question over send and poisoning
 Unsafe impl<'a, T> !Send for MutexGuard<'a,T>
 Unsafe impl<'a, T : !Sync> !Sync for MutexGuard<'a,T>
 Unsafe impl<'a, T : Sync> Sync for MutexGuard<'a,T>
-
+//ANCHOR_END: mutex_guard_send_sync
 
 
 impl<'a, T:Sized> MutexGuard<'a,T> {
