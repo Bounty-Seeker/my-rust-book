@@ -1,52 +1,58 @@
 # Locking our mutex
 
-We have now reached the stage at which we will need to implement our actual locking mechanism in the LockMech struct.
-As mentioned at the beginning of the chapter, modern OSs offer features to make the locking mechanism much more efficient. Unfortunately in order to implement such a lock we would be required to get involved with the various APIs each OS and hardware exposes. This however is not the purpose of this chapter, which is to understand the safety concerns when created our own types. As such our Mutex will utilise a simple atomic which has been exposed by Rust's std. If you want to examine how we create a mutex using these features you can check the implementations in the std library TODO link
+The time has now come to implement our actual locking mechanism in the ```LockMech``` struct.
+
+As mentioned at the beginning of the chapter, modern OSs offer features to make the locking mechanism much more efficient.
+Unfortunately in order to implement such a lock we would be required to get involved with the various APIs each OS and hardware exposes. This however is outside the scope of the chapter, which is to understand the safety concerns when creating our own types.
+If you want to examine how we can create a Mutex using these features you can check the implementations in the standard library.
+
+Our ```Mutex``` will utilise an [```AtomicBool```][atmbool] which has been exposed by Rust's std. This type is only available on platforms that support atomic loads and stores of ```u8```. This should cover most platforms.
 
 ## Atomics
+The [```AtomicBool```][atmbool] will be the core of our lock. When no one has a ```MutexGuard``` the bool will be ```false``` and when one exists it will be ```true```. Let's import the appropriate modules and alter the ```LockMech``` struct.
 
-We shall use the AtomicBool TODO rusty type as the core of our lock. When no one has a MutexGuard the bool will be False and when one exists it will be True.
-
-TODO make LockMech
 ```rust
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech}}
 ```
 
-For the new TODO rusty method  we will simply require the new TODO method of  AtomicBool TODO with value False.
+For the ```fn new() -> LockMech``` method we will simply create an ```AtomicBool``` with the initial value ```false```.
 
-TODO new method
 ```rust
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_new}}
 ```
 
-The unlock function is also relatively simple as we will simply use the store TODO rusty method from the AtomicBool. We will talk about the ordering in a moment.
+The ```fn unlock(&self)``` function is also relatively simple as we will simply use the ```fn store(&self, val: bool, order: Ordering)``` method with ```val``` set to ```false``` from the AtomicBool library to change it from ```true``` to ```false```. We will talk about the ordering in a moment.
 
-TODO unlock function
 ```rust
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_unlock}}
 ```
 
-Now we need to do the lock functions. The lock functions we need to be more complex as the methods must read the bool and if the bool is False we set it to true then alert us to this action but if the bool is True then we do nothing and alert ourselves to the fact. All of this must be done atomically.
-This  can be done with compare_and_swap TODO rusty method with current set to False and new set to True.
+Now we need to complete the lock functions. The lock functions we need to be more complex as the methods must read the bool and if the bool is ```false``` we set it to ```true``` then alert us to this action but if the bool is ```true``` then we do nothing and alert ourselves to the fact all of which must be done atomically.
 
-TODO lock functions
+For ```fn lock(&self)``` we will repeatedly call the ```fn try_lock(&self) -> bool``` function in a loop and only return when ```try_lock``` returns ```true```.
+
 ```rust
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_lock}}
 ```
 
+Now we just need to complete the ```fn try_lock(&self) -> bool``` function. The ```fn fetch_or(&self, val: bool, order: Ordering) -> bool``` from ```AtomicBool```'s library with ```val``` set to ```True``` will give us the correct behavior.
+
+If the Mutex is not locked then the ```LockMech```'s bool is ```false```, ```fetch_or``` will then change the value to ```true``` and return ```false```.
+
+If the Mutex is locked then the ```LockMech```'s bool is ```true```, ```fetch_or``` will do nothing to the value, so it remains ```true``` and the function returns ```true```.
+
+So just by taking the logical not of this we can finish our ```try_lock``` method.
+
+```rust
+{{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_try_lock}}
+```
+
+## Orderings
 TODO orderings
 
-We this with have now finished the locking mechanism for the Mutex. This means the core functionality of the Mutex is complete. We now need to implement the appropriate traits for our Mutex.
+We this with have now finished the locking mechanism for the Mutex. With this the core functionality of the Mutex is complete. We now need to implement the appropriate traits for our Mutex.
 
 Full code at this point:
 
 
-
-
-
-
-
-
-
-
-
+[atmbool]:https://doc.rust-lang.org/std/sync/atomic/struct.AtomicBool.html

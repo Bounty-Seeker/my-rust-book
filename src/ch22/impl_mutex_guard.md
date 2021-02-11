@@ -1,17 +1,18 @@
 # Implementing Mutex Guard
 
-The first issue being rather simple. Our lock functions lock the mutex and return a mutable reference to our data which should work fine once we implement our lock_mech. The problem is that we never unlock the lock_mech once we are done making changes to the inner data.
-The solution is to simply return a new struct called a Mutex_Guard TODO rusty from our locking functions. If we implement traits Deref and DerefMut on the Mutex_Guard the user will be able to treat like a reference to the inner data. By also implementing the drop trait to unlock the mutex when were are done and the lifetimes ensure we are able to do so safely.
-So lets implement it.
+The first issue being rather simple. Our lock functions lock the ```Mutex``` and return a mutable reference to our data which should work fine once we implement our ```LockMech```. The problem is however that we never unlock the lock once we are done making changes to the inner data.
 
-```rust
-{{#rustdoc_include ./code/impl_mutex_guard/mutex_guard_intro.rs:here2}}
-```
+This problem is relatively common and has a well known solution is to simply return a new struct called a ```MutexGuard``` from our locking functions. If we implement traits ```Deref``` and ```DerefMut``` on the ```MutexGuard``` the user will be able to treat like a reference to the inner data.
+By also implementing the ```drop``` trait to unlock the ```Mutex``` when were are done and the lifetimes ensure we are able to manage access to the data safely and correctly.
+
+So lets implement it.
 
 ```rust
 {{#rustdoc_include ./code/impl_mutex_guard/mutex_guard_intro.rs:here}}
 ```
 
-TODO Mutex_Guard struct { &mut Mutex} !sync, !send, sized, drop, deref, derefmut, change old functions
+And we alter the methods on the ```Mutex``` to return a ```MutexGuard```.
 
-Full code at this point:
+```rust
+{{#rustdoc_include ./code/impl_mutex_guard/mutex_guard_intro.rs:here2}}
+```

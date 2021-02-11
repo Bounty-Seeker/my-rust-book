@@ -65,7 +65,7 @@ impl LockMech {
     /// get immediate access. If it can get the lock we return
     /// True.
     fn try_lock(&self) -> bool {
-        self.locked.compare_and_swap(&self, False, True, order: Ordering)
+        self.locked.fetch_or(true, order: Ordering)
     }
 
     /// Unlocks the lock.

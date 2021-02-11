@@ -3,6 +3,7 @@
         "impls",
         "include",
         "rustdoc",
-        "struct"
+        "struct",
+        "structs"
     ]
 }

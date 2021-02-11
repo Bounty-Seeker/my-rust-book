@@ -42,7 +42,9 @@ impl<T:Sized> Mutex<T> {
         self.data
     }
 }
+// ANCHOR_END: here
 
+// ANCHOR: here2
 impl LockMech {
 
     /// Create a LockMech.
@@ -67,4 +69,4 @@ impl LockMech {
         todo!()
     }
 }
-// ANCHOR_END: here
+// ANCHOR_END: here2

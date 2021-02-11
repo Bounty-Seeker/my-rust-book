@@ -74,15 +74,17 @@ impl LockMech {
     fn lock(&self) {
         while !self.try_lock() {}
     }
-
-    /// Tries to lock but returns with False if unable to
-    /// get immediate access. If it can get the lock we return
-    /// True.
-    fn try_lock(&self) -> bool {
-        //TODO check me, change func
-        self.locked.compare_and_swap(false, true, Ordering::SeqCst)
-    }
 //ANCHOR_END: lock_mech_lock
+
+//ANCHOR: lock_mech_try_lock
+    /// Tries to lock but returns with false if unable to
+    /// get immediate access. If it can get the lock we return
+    /// true.
+    fn try_lock(&self) -> bool {
+        //TODO check me, change func, check all comments are correct
+        !self.locked.fetch_or(true, Ordering::SeqCst)
+    }
+//ANCHOR_END: lock_mech_try_lock
 
 //ANCHOR: lock_mech_unlock
 //TODO should this be runnable and others, CHECK ALL ORDERINGS
@@ -92,7 +94,6 @@ impl LockMech {
     }
 //ANCHOR_END: lock_mech_unlock
 }
-
 
 
 struct MutexGuard<'a, T:Sized> {
@@ -109,7 +110,6 @@ impl<'a, T:Sized> MutexGuard<'a,T> {
             mu
         }
     }
-
 }
 
 impl<'a, T:Sized> Drop for MutexGuard<'a,T> {
@@ -139,29 +139,3 @@ impl<'a, T:Sized> DerefMut for MutexGuard<'a,T> {
         unsafe{&mut *self.mu.data.get()}
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

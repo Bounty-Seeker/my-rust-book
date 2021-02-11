@@ -84,7 +84,7 @@ impl LockMech {
     /// True.
     fn try_lock(&self) -> bool {
         //TODO check me, change func
-        self.locked.compare_and_swap(false, true, Ordering::SeqCst)
+        !self.locked.fetch_or(true, Ordering::SeqCst)
     }
 //ANCHOR_END: lock_mech_lock
 
