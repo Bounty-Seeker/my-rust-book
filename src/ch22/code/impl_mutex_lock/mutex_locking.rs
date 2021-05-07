@@ -4,6 +4,7 @@ use std::cell::UnsafeCell;
 
 // ANCHOR: lock_mech
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::hint;
 
 // --snip--
 
@@ -72,7 +73,9 @@ impl LockMech {
 //ANCHOR: lock_mech_lock
     /// Tries to lock, spins until we get access to data.
     fn lock(&self) {
-        while !self.try_lock() {}
+        while !self.try_lock() {
+            hint::spin_loop();
+        }
     }
 //ANCHOR_END: lock_mech_lock
 
@@ -81,16 +84,14 @@ impl LockMech {
     /// get immediate access. If it can get the lock we return
     /// true.
     fn try_lock(&self) -> bool {
-        //TODO check me, change func, check all comments are correct
-        !self.locked.fetch_or(true, Ordering::SeqCst)
+        !self.locked.swap(true, Ordering::Acquire)
     }
 //ANCHOR_END: lock_mech_try_lock
 
 //ANCHOR: lock_mech_unlock
-//TODO should this be runnable and others, CHECK ALL ORDERINGS
     /// Unlocks the lock.
     fn unlock(&self) {
-        self.locked.store(false, Ordering::SeqCst)
+        self.locked.store(false, Ordering::Release)
     }
 //ANCHOR_END: lock_mech_unlock
 }
@@ -121,7 +122,7 @@ impl<'a, T:Sized> Drop for MutexGuard<'a,T> {
 impl<'a, T:Sized> Deref for MutexGuard<'a,T> {
     type Target = T;
 
-    fn deref(&self) -> &Self::Target {
+    fn deref(&'b self) -> &'b Self::Target {
         // SAFETY: safe as only one MutexGuard at any time and
         // & of MutexGuard ensures we have shared access
         // Also function lifetimes ensure we can't use after we
@@ -131,7 +132,7 @@ impl<'a, T:Sized> Deref for MutexGuard<'a,T> {
 }
 
 impl<'a, T:Sized> DerefMut for MutexGuard<'a,T> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
+    fn deref_mut(&'b mut self) -> &'b mut Self::Target {
         // SAFETY: safe as only one MutexGuard at any time and
         // &mut of MutexGuard ensures we have unique access
         // Also function lifetimes ensure we can't use after we

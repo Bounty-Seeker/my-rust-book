@@ -125,7 +125,7 @@
   - [Implementing MutexGuard](ch22/impl_mutex_guard.md)
   - [The UnsafeCell type](ch22/impl_mutex_unsafe_cell.md)
   - [Implementing locking for our Mutex](ch22/impl_mutex_locking.md)
-  - [Should our mutex be ?Sized, Sync, Send](ch22/impl_mutex_sized_sync_send.md)
+  - [Should our mutex be ?Sized, Sync, Send](ch22/impl_mutex_auto_traits.md)
   - [A fully working Mutex](ch22/impl_mutex_review_no_poison.md)
   - [Poisoning in our Mutex](ch22/impl_mutex_poison.md)
   - [Managing what happens when poisoning occurs](ch22/impl_mutex_poison_error.md)
@@ -143,7 +143,7 @@
 
 - [Macros]()
 
-- [std intresting stuff]()
+- [std interesting stuff]()
 
 - [Beneath std]()
   - [Setup to program]()

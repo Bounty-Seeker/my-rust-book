@@ -2,7 +2,7 @@
 
  The issue is what happens if the user code panics while its making changes to the inner data it can result in the data being left in an incoherent state.
 We can implement mechanisms in order to alert the user if this happens. At the moment whether to include this aspect is included in the std library, at the time of writing this, is under debate. TODO check, link, why debate
-
+TODO minimal panic safe
 
 ## Problem and Solution
 The problem with our code is what happens if the user code panics while altering the inner data. This can result in the inner data being placed in an inconsistent state. TODO example
@@ -36,6 +36,8 @@ TODO drop method
 And we need to alter the locking functions. We will discuss how we can report this to the user in the next section for now we will just panic!().
 
 TODO locking method change
+TODO does it need to be atomic
+TODO how do we unset poison flag
 
 There is still one wrinkle with are implementation.
 
