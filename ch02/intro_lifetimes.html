@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Lifetimes - Rust In Detail</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../favicon.png">
+        
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><div>Rust in detail</div></li><li class="chapter-item expanded affix "><a href="../Prefix/what_is_this_book.html">What is this book</a></li><li class="chapter-item expanded "><a href="../ch01/intro_anatomy.html"><strong aria-hidden="true">1.</strong> Anatomy of a Rust Program</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch01/overview.html"><strong aria-hidden="true">1.1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../ch01/exec.html"><strong aria-hidden="true">1.2.</strong> Run</a></li><li class="chapter-item expanded "><a href="../ch01/constant.html"><strong aria-hidden="true">1.3.</strong> Constant</a></li><li class="chapter-item expanded "><a href="../ch01/statics.html"><strong aria-hidden="true">1.4.</strong> Statics</a></li><li class="chapter-item expanded "><a href="../ch01/stack.html"><strong aria-hidden="true">1.5.</strong> Stack</a></li><li class="chapter-item expanded "><a href="../ch01/heap.html"><strong aria-hidden="true">1.6.</strong> Heap</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.7.</strong> Registers</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.8.</strong> Complications, closures , red zone, scratch pad</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.9.</strong> &amp;str vs String</div></li><li class="chapter-item expanded "><a href="../ch01/function_calls.html"><strong aria-hidden="true">1.10.</strong> Function calls, ABIs</a></li><li class="chapter-item expanded "><a href="../ch01/hardware_vs_compiler.html"><strong aria-hidden="true">1.11.</strong> hardware vs compiler</a></li></ol></li><li class="chapter-item expanded "><a href="../ch02/intro_lifetimes.html" class="active"><strong aria-hidden="true">2.</strong> Lifetimes</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">2.1.</strong> Rules</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.2.</strong> How rustc does borrow checking</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.3.</strong> Lifetimes in type signatures</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.4.</strong> initialzing</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.5.</strong> splitting borrows</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.6.</strong> Phantom data</div></li></ol></li><li class="chapter-item expanded "><a href="../ch03/intro_unsafe.html"><strong aria-hidden="true">3.</strong> Unsafe</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.1.</strong> Undefined behaviour</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.2.</strong> valid data</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.</strong> Unsafe functions</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.4.</strong> Implications</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.5.</strong> Traits</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.6.</strong> ptrs vs references</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.7.</strong> Examples</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.8.</strong> FFIs</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.9.</strong> Allocator</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.10.</strong> unbound lifetime</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.11.</strong> unititalized Maemory radje blog</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.12.</strong> transmute</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.13.</strong> Unsafe tips</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.14.</strong> Casts</div></li></ol></li><li class="chapter-item expanded "><a href="../ch04/intro_types.html"><strong aria-hidden="true">4.</strong> Types</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">4.1.</strong> repr</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.2.</strong> Intresting Type stuff</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.3.</strong> Chalk</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.4.</strong> !</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.5.</strong> Function Pointers vs Function Items</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.6.</strong> Print type sizes</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.7.</strong> extern types</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.8.</strong> ZSTs</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.9.</strong> Empty Types</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.10.</strong> Thin wrapper</div></li></ol></li><li class="chapter-item expanded "><a href="../ch05/intro_type_sizedness.html"><strong aria-hidden="true">5.</strong> Type sizedness</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">5.1.</strong> &amp;[]</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.2.</strong> Pointer and size</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.3.</strong> dyn type</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.4.</strong> DSTs</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.5.</strong> Heap vs Stack</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.6.</strong> ?sized</div></li></ol></li><li class="chapter-item expanded "><a href="../ch06/intro_concur.html"><strong aria-hidden="true">6.</strong> Concurrency</a></li><li class="chapter-item expanded "><a href="../ch07/intro_async.html"><strong aria-hidden="true">7.</strong> async</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">7.1.</strong> Pin</div></li></ol></li><li class="chapter-item expanded "><a href="../ch08/intro_FFIs.html"><strong aria-hidden="true">8.</strong> FFIs</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">8.1.</strong> C types</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">8.2.</strong> Helpful tools</div></li></ol></li><li class="chapter-item expanded "><a href="../ch09/intro_miri.html"><strong aria-hidden="true">9.</strong> miri</a></li><li class="chapter-item expanded "><a href="../ch10/intro_const_eval.html"><strong aria-hidden="true">10.</strong> constant eval</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">10.1.</strong> miri</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">10.2.</strong> Floating point inaccuracies</div></li></ol></li><li class="chapter-item expanded "><a href="../ch11/intro_iterators.html"><strong aria-hidden="true">11.</strong> Iterators</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">11.1.</strong> traits</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">11.2.</strong> intro_iter() vs iter() bs iter_mut()</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">11.3.</strong> Other iterator traits</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">11.4.</strong> Stream iterator</div></li></ol></li><li class="chapter-item expanded "><a href="../ch12/intro_generics.html"><strong aria-hidden="true">12.</strong> Generics</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">12.1.</strong> Const Generics</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">12.2.</strong> Generic Associated Types</div></li></ol></li><li class="chapter-item expanded "><a href="../ch13/intro_high_kind.html"><strong aria-hidden="true">13.</strong> Higher kindeness</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">13.1.</strong> Intro</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">13.2.</strong> Generic Types</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">13.3.</strong> Lifetimes</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">13.4.</strong> Traits</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">13.5.</strong> HRTBs</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">13.6.</strong> Const Generics</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">13.7.</strong> Generic Associated Types</div></li></ol></li><li class="chapter-item expanded "><a href="../ch14/intro_cows.html"><strong aria-hidden="true">14.</strong> Cows</a></li><li class="chapter-item expanded "><a href="../ch15/intro_heap.html"><strong aria-hidden="true">15.</strong> Heap</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">15.1.</strong> Allocator</div></li></ol></li><li class="chapter-item expanded "><a href="../ch16/intro_impl_box.html"><strong aria-hidden="true">16.</strong> Implement Box</a></li><li class="chapter-item expanded "><a href="../ch17/intro_impl_vec.html"><strong aria-hidden="true">17.</strong> Implement Vec</a></li><li class="chapter-item expanded "><a href="../ch18/intro_inter_mut.html"><strong aria-hidden="true">18.</strong> Interior Mutability</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">18.1.</strong> Exterior vs Interior mutability</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">18.2.</strong> Unsafe_cell</div></li></ol></li><li class="chapter-item expanded "><a href="../ch19/intro_impl_cell.html"><strong aria-hidden="true">19.</strong> Implement Cell</a></li><li class="chapter-item expanded "><a href="../ch20/intro_impl_rc.html"><strong aria-hidden="true">20.</strong> Implement Rc</a></li><li class="chapter-item expanded "><a href="../ch21/intro_impl_refcell.html"><strong aria-hidden="true">21.</strong> Implement Refcell</a></li><li class="chapter-item expanded "><a href="../ch22/intro_impl_mutex.html"><strong aria-hidden="true">22.</strong> Implement Mutex</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../ch22/impl_mutex_initial_layout.html"><strong aria-hidden="true">22.1.</strong> Creating an Initial Layout</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_guard.html"><strong aria-hidden="true">22.2.</strong> Implementing MutexGuard</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_unsafe_cell.html"><strong aria-hidden="true">22.3.</strong> The UnsafeCell type</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_locking.html"><strong aria-hidden="true">22.4.</strong> Implementing locking for our Mutex</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_auto_traits.html"><strong aria-hidden="true">22.5.</strong> Should our mutex be ?Sized, Sync, Send</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_review_no_poison.html"><strong aria-hidden="true">22.6.</strong> A fully working Mutex</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_poison.html"><strong aria-hidden="true">22.7.</strong> Poisoning in our Mutex</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_poison_error.html"><strong aria-hidden="true">22.8.</strong> Managing what happens when poisoning occurs</a></li><li class="chapter-item expanded "><a href="../ch22/impl_mutex_final.html"><strong aria-hidden="true">22.9.</strong> A working Mutex With poisoning</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">22.10.</strong> Manually Drop</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">23.</strong> Rust Issues</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">23.1.</strong> How to read</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">24.</strong> Future Rust Improvements</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">25.</strong> Undefined behavior</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">26.</strong> Conventions</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">27.</strong> Macros</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">28.</strong> std interesting stuff</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">29.</strong> Beneath std</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">29.1.</strong> Setup to program</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">29.2.</strong> PHil OS stuff raised</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">29.3.</strong> ABIs</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">29.4.</strong> Red_zone</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">29.5.</strong> inline</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">30.</strong> rustc tour</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">30.1.</strong> lang items</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">30.2.</strong> librification</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">30.3.</strong> NLL vs polonius</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">30.4.</strong> datalog language used for polonius</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">30.5.</strong> trait type checker</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">30.6.</strong> llvm</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">31.</strong> Formal proof checked stuff</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">31.1.</strong> Stacked borrows</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">32.</strong> Closure</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">32.1.</strong> syntatic sugar</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">32.2.</strong> move</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">32.3.</strong> Fn, FnMut, FnOnce</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">32.4.</strong> threads</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">33.</strong> Intresting traits</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">33.1.</strong> From and Into</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">33.2.</strong> Borrow</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">33.3.</strong> Borrow_mut</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">33.4.</strong> As_ref</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">34.</strong> Intresting Crates</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">34.1.</strong> Nom</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">34.2.</strong> Serde</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">35.</strong> Blogs</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">36.</strong> Coding Challenges</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">37.</strong> Appendix</div></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Rust In Detail</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        
+
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-2"><a class="header" href="#chapter-2">Chapter 2</a></h1>
+<p>Test Test</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../ch01/hardware_vs_compiler.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../ch03/intro_unsafe.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../ch01/hardware_vs_compiler.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../ch03/intro_unsafe.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
