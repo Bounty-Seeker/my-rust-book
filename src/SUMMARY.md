@@ -1,6 +1,6 @@
 # Summary
 
-[Rust in detail]()
+[Rust in detail](index.html)
 [What is this book](Prefix/what_is_this_book.md)
 
 
