@@ -150,10 +150,7 @@ Our Mutex is going to be accessed from multiple places possibly at the same time
 <p>In order to solve this we will change all the previous functions to only require a <code>&amp;self</code> instead.
 The compiler will let us give out multiple shared references quite happily.
 This will give us:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
@@ -259,18 +256,14 @@ This will give us:</p>
 </span><span class="boring">        &amp;mut self.mu.data
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO set doesn't compiler on import in mdbook md text when we test</p>
 <p>This however also gives us a bunch of compiler errors in our other methods:</p>
 <p>TODO compiler error</p>
 <pre><code class="language-console">hhhh
 </code></pre>
 <p>So we need to make the same change in the functions of our internal structs.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
@@ -404,8 +397,7 @@ impl&lt;'a, T:Sized&gt; MutexGuard&lt;'a,T&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>However this once more creates another new problem.
 The compiler nicely stops us from making any changes to our internal structs as we no longer have a mutable reference to them.
 But we can't get a mutable reference as our <code>MutexGuard</code> only has a shared reference to our <code>Mutex</code>.</p>
@@ -419,10 +411,7 @@ It may look complicated to begin with but all it is a wrapper around a value wit
 The docs for the <a href="https://doc.rust-lang.org/std/cell/struct.UnsafeCell.html">UnsafeCell</a> give a fuller picture while all we need to understand is that the <code>UnsafeCell&lt;T&gt;</code> lets us take a <code>&amp;UnsafeCell&lt;T&gt;</code> to a <code>*mut T</code> which we can then turn into a <code>&amp;mut T</code> via unsafe code. TODO mention other ways UnsafeCell works such as send sync behavior.
 It also gives us the correct behavior from the drop checker and the correct variance, which we explain later. TODO which is.</p>
 <p>So lets change our <code>Mutex&lt;T&gt;</code>'s data field to <code>UnsafeCell&lt;T&gt;</code> to take advantage of this behavior.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span>use std::cell::UnsafeCell;
 
@@ -561,13 +550,9 @@ pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>And we also make changes to the appropriate functions:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -706,13 +691,9 @@ pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>Also we need to alter the deref functions for the <code>MutexGuard</code>:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -851,8 +832,7 @@ impl&lt;'a, T:Sized&gt; DerefMut for MutexGuard&lt;'a,T&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>With this we can give safe mutable access to the inner data via our Mutex.</p>
 <h2 id="variance"><a class="header" href="#variance">Variance</a></h2>
 <p>TODO MutexGuard 'a and Mutex</p>

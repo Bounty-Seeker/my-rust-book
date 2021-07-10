@@ -159,13 +159,10 @@ struct LockMech;
 </span></code></pre></pre>
 <p>The data field shall hold our data while the <code>LockMech</code> struct will handle access control. It will, as previously discussed only allow one thread access to the data at any one time and spin while waiting. The <code>LockMech</code> struct is also the element for which we could use conditional compilation to take advantage of each platforms features and is how the std actually works.</p>
 <p>Our Mutex will also need some methods:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span>
+<pre><code class="language-rust ignore">
 #![feature(negative_impls)]
 
-<span class="boring">fn main() {
-</span>pub struct Mutex&lt;T : Sized&gt; {
+pub struct Mutex&lt;T : Sized&gt; {
     lock_mech : LockMech,
     data : T,
 }
@@ -197,15 +194,11 @@ impl&lt;T:Sized&gt; Mutex&lt;T&gt; {
         todo!()
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>This gives us the core functionality expected from a Mutex. This should be enough for our purpose and can easily be expanded to give further functionality.</p>
 <p>TODO  Sized, pub</p>
 <p>We can also create the following methods for our <code>LockMech</code> struct.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">    lock_mech : LockMech,
@@ -273,13 +266,9 @@ impl&lt;T:Sized&gt; Mutex&lt;T&gt; {
         todo!()
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>Now using these functions we can now complete the bodies of our associated methods on the Mutex struct.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">    lock_mech : LockMech,
@@ -347,8 +336,7 @@ impl&lt;T:Sized&gt; Mutex&lt;T&gt; {
 </span><span class="boring">        todo!()
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>Our Mutex is already looking good and we have only just begun. However we already have several problems to address that we should fix before go further.</p>
 
                     </main>

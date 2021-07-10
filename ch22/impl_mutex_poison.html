@@ -154,10 +154,7 @@ TODO minimal panic safe</p>
 <p>If when the MutexGuard is dropped we check if the thread is panicking. If it is we set a flag on the Mutex to note such a fact. Then when future threads try to access we need to notify them that the data has been poisoned and we need to do so while maintaining our safety guarantees.</p>
 <p>In order to implement this we will first need to add an AtomicBool to the Mutex that tracks whether the inner data is poisoned or not. TODO Why AtomicBool</p>
 <p>TODO add AtomicBool and change setup funcs</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">
 </span>pub struct Mutex&lt;T&gt; : Sized {
     lock_mech : LockMech,
@@ -313,12 +310,8 @@ TODO minimal panic safe</p>
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+</span></code></pre>
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
@@ -474,15 +467,11 @@ TODO minimal panic safe</p>
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>This should allow us to record if it is possible that the inner data has been poisoned.
 And we need to alter the drop TODO rusty method for the MutexGuard to check.</p>
 <p>TODO drop method</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
@@ -638,8 +627,7 @@ And we need to alter the drop TODO rusty method for the MutexGuard to check.</p>
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>And we need to alter the locking functions. We will discuss how we can report this to the user in the next section for now we will just panic!().</p>
 <p>TODO locking method change
 TODO does it need to be atomic
@@ -650,10 +638,7 @@ TODO how do we unset poison flag</p>
 So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard flag is not set and the thead is panicking.</p>
 <p>Before we implement this we need to ask ourselves some questions: TODO Double panic, catch_unwind</p>
 <p>TODO implement changes to MutexGuard and functions</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -808,12 +793,8 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+</span></code></pre>
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -968,12 +949,8 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+</span></code></pre>
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -1128,15 +1105,11 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO Send questions check all correct in previous chapters</p>
 <p>We also need the MutexGuard !Send TODO rusty in all cases. This is as we are now storing a thread specific data in the MutexGuard.</p>
 <p>TODO make not Send</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -1291,8 +1264,7 @@ Unsafe impl&lt;'a, T : Sync&gt; Sync for MutexGuard&lt;'a,T&gt;
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO why safe</p>
 <p>TODO safety</p>
 <p>We now have protected from poisoning and is now time for us to work out how to tell the user their data is possibly poisoned.</p>

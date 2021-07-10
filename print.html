@@ -145,7 +145,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="what-is-this-book"><a class="header" href="#what-is-this-book">What is this book</a></h1>
-<p>This book is my attempt to write down all thefvrvgrfvsrdvsrdvdfvsdfvsedfvggggg </p>
+<p>This book is my attempt to write down all oddoties and intracicies I find in Rust. In each case I will try to not only describe how something works, I will attempt to describe why it is so.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-this-book-1"><a class="header" href="#what-is-this-book-1">What is this book</a></h1>
 <p>This book is my attempt to write down all the </p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="anatomy-of-a-rust-program"><a class="header" href="#anatomy-of-a-rust-program">Anatomy of a rust program</a></h1>
@@ -218,13 +218,10 @@ struct LockMech;
 </span></code></pre></pre>
 <p>The data field shall hold our data while the <code>LockMech</code> struct will handle access control. It will, as previously discussed only allow one thread access to the data at any one time and spin while waiting. The <code>LockMech</code> struct is also the element for which we could use conditional compilation to take advantage of each platforms features and is how the std actually works.</p>
 <p>Our Mutex will also need some methods:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span>
+<pre><code class="language-rust ignore">
 #![feature(negative_impls)]
 
-<span class="boring">fn main() {
-</span>pub struct Mutex&lt;T : Sized&gt; {
+pub struct Mutex&lt;T : Sized&gt; {
     lock_mech : LockMech,
     data : T,
 }
@@ -256,15 +253,11 @@ impl&lt;T:Sized&gt; Mutex&lt;T&gt; {
         todo!()
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>This gives us the core functionality expected from a Mutex. This should be enough for our purpose and can easily be expanded to give further functionality.</p>
 <p>TODO  Sized, pub</p>
 <p>We can also create the following methods for our <code>LockMech</code> struct.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">    lock_mech : LockMech,
@@ -332,13 +325,9 @@ impl&lt;T:Sized&gt; Mutex&lt;T&gt; {
         todo!()
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>Now using these functions we can now complete the bodies of our associated methods on the Mutex struct.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">    lock_mech : LockMech,
@@ -406,8 +395,7 @@ impl&lt;T:Sized&gt; Mutex&lt;T&gt; {
 </span><span class="boring">        todo!()
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>Our Mutex is already looking good and we have only just begun. However we already have several problems to address that we should fix before go further.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="implementing-mutex-guard"><a class="header" href="#implementing-mutex-guard">Implementing Mutex Guard</a></h1>
 <p>The first issue being rather simple. Our lock functions lock the <code>Mutex</code> and return a mutable reference to our data which should work fine once we implement our <code>LockMech</code>. The problem is however that we never unlock the lock once we are done making changes to the inner data.</p>
@@ -415,10 +403,7 @@ impl&lt;T:Sized&gt; Mutex&lt;T&gt; {
 By also implementing the <code>drop</code> trait to unlock the <code>Mutex</code> when we are done.</p>
 <p>So lets implement it.</p>
 <p>We create the <code>MutexGuard</code> and its associated methods:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span>use std::ops::{Drop, Deref, DerefMut};
 
@@ -532,13 +517,9 @@ impl&lt;'a, T:Sized&gt; DerefMut for MutexGuard&lt;'a,T&gt; {
         &amp;mut self.mu.data
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>And we alter the methods on the <code>Mutex</code> to return a <code>MutexGuard</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">
@@ -652,8 +633,7 @@ impl&lt;'a, T:Sized&gt; DerefMut for MutexGuard&lt;'a,T&gt; {
 </span><span class="boring">        &amp;mut self.mu.data
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>That was relatively simple so lets move on to the next problem.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="implementing-our-mutex-using-an-unsafecell"><a class="header" href="#implementing-our-mutex-using-an-unsafecell">Implementing our Mutex using an UnsafeCell</a></h1>
 <p>The second issue is much more complicated.
@@ -662,10 +642,7 @@ Our Mutex is going to be accessed from multiple places possibly at the same time
 <p>In order to solve this we will change all the previous functions to only require a <code>&amp;self</code> instead.
 The compiler will let us give out multiple shared references quite happily.
 This will give us:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
@@ -771,18 +748,14 @@ This will give us:</p>
 </span><span class="boring">        &amp;mut self.mu.data
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO set doesn't compiler on import in mdbook md text when we test</p>
 <p>This however also gives us a bunch of compiler errors in our other methods:</p>
 <p>TODO compiler error</p>
 <pre><code class="language-console">hhhh
 </code></pre>
 <p>So we need to make the same change in the functions of our internal structs.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T : Sized&gt; {
@@ -916,8 +889,7 @@ impl&lt;'a, T:Sized&gt; MutexGuard&lt;'a,T&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>However this once more creates another new problem.
 The compiler nicely stops us from making any changes to our internal structs as we no longer have a mutable reference to them.
 But we can't get a mutable reference as our <code>MutexGuard</code> only has a shared reference to our <code>Mutex</code>.</p>
@@ -931,10 +903,7 @@ It may look complicated to begin with but all it is a wrapper around a value wit
 The docs for the <a href="https://doc.rust-lang.org/std/cell/struct.UnsafeCell.html">UnsafeCell</a> give a fuller picture while all we need to understand is that the <code>UnsafeCell&lt;T&gt;</code> lets us take a <code>&amp;UnsafeCell&lt;T&gt;</code> to a <code>*mut T</code> which we can then turn into a <code>&amp;mut T</code> via unsafe code. TODO mention other ways UnsafeCell works such as send sync behavior.
 It also gives us the correct behavior from the drop checker and the correct variance, which we explain later. TODO which is.</p>
 <p>So lets change our <code>Mutex&lt;T&gt;</code>'s data field to <code>UnsafeCell&lt;T&gt;</code> to take advantage of this behavior.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span>use std::cell::UnsafeCell;
 
@@ -1073,13 +1042,9 @@ pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>And we also make changes to the appropriate functions:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -1218,13 +1183,9 @@ pub struct Mutex&lt;T : Sized&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>Also we need to alter the deref functions for the <code>MutexGuard</code>:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -1363,8 +1324,7 @@ impl&lt;'a, T:Sized&gt; DerefMut for MutexGuard&lt;'a,T&gt; {
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>With this we can give safe mutable access to the inner data via our Mutex.</p>
 <h2 id="variance"><a class="header" href="#variance">Variance</a></h2>
 <p>TODO MutexGuard 'a and Mutex</p>
@@ -1390,10 +1350,7 @@ If you want to examine how we can create a Mutex using these features you can ch
 <p>Our <code>Mutex</code> will utilise an <a href="https://doc.rust-lang.org/std/sync/atomic/struct.AtomicBool.html"><code>AtomicBool</code></a> which has been exposed by Rust's std. This type is only available on platforms that support atomic loads and stores of <code>u8</code>. This should cover most platforms.</p>
 <h2 id="atomics"><a class="header" href="#atomics">Atomics</a></h2>
 <p>The <a href="https://doc.rust-lang.org/std/sync/atomic/struct.AtomicBool.html"><code>AtomicBool</code></a> will be the core of our lock. When no one has a <code>MutexGuard</code> the bool will be <code>false</code> and when one exists it will be <code>true</code>. So let's import the appropriate modules and alter the <code>LockMech</code> struct.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -1523,13 +1480,9 @@ use std::hint;
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>For the <code>fn new() -&gt; LockMech</code> method we will simply create an <code>AtomicBool</code> with the initial value <code>false</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -1659,15 +1612,11 @@ use std::hint;
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>The <code>fn unlock(&amp;self)</code> function is also relatively simple as we will simply use the <code>fn store(&amp;self, val: bool, order: Ordering)</code> method with <code>val</code> set to <code>false</code> from the AtomicBool library to change it from <code>true</code> to <code>false</code>.
 We will talk about the ordering in a moment.
 TODO change ordering</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -1797,15 +1746,11 @@ TODO change ordering</p>
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>Now we need to complete the lock functions.
 The lock functions we need to be more complex as the methods must read the bool and if the bool is <code>false</code> we set it to <code>true</code> then alert us to this action but if the bool is <code>true</code> then we do nothing and alert ourselves to the fact all of which must be done atomically.</p>
 <p>For <code>fn lock(&amp;self)</code> we will repeatedly call the <code>fn try_lock(&amp;self) -&gt; bool</code> function in a loop and only return when <code>try_lock</code> returns <code>true</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -1935,18 +1880,14 @@ The lock functions we need to be more complex as the methods must read the bool 
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO add hint::spin_lock() and link</p>
 <p>The function <code>std::hint::spin_loop()</code> is a standard library function that signals to the processor that it is running in a busy-wait spin-loop if the capability is available on the target platform and does nothing if it is not.</p>
 <p>Now we just need to complete the <code>fn try_lock(&amp;self) -&gt; bool</code> function.
 The <code>fn swap(&amp;self, val: bool, order: Ordering) -&gt; bool</code> from <code>AtomicBool</code>'s library with <code>val</code> set to <code>true</code> will give us the correct behavior.</p>
 <p>If the Mutex is not locked then the <code>LockMech</code>'s bool is <code>false</code>, <code>swap</code> will change the value to <code>true</code> and return <code>false</code>. Hence acquiring the lock and by taking the logical not of the output of <code>swap</code> we get our desired output.</p>
 <p>If the Mutex is locked then the <code>LockMech</code>'s bool is <code>true</code>, <code>swap</code> will do nothing to the value, so it remains <code>true</code> and the <code>swap</code> function returns <code>true</code>. So just by taking the logical not of this we can finish our <code>try_lock</code> method.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -2076,8 +2017,7 @@ The <code>fn swap(&amp;self, val: bool, order: Ordering) -&gt; bool</code> from 
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO change to swap and size_hint() and spin lock</p>
 <h2 id="orderings"><a class="header" href="#orderings">Orderings</a></h2>
 <p>TODO orderings</p>
@@ -2095,10 +2035,7 @@ However if <code>T</code> is just <code>Sync</code> then this is not enough as w
 <p>The above reasoning is summarized in the table below TODO table.</p>
 <p>And we can alter are code to reflect this.</p>
 <p>TODO code, table</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -2242,8 +2179,7 @@ unsafe impl&lt;T : Send&gt; Send for Mutex&lt;T&gt; {}
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO atomicbool thread safe? explain in all cases</p>
 <h3 id="mutexguard"><a class="header" href="#mutexguard">MutexGuard</a></h3>
 <p>The issue of <code>Sync</code> and <code>Send</code> however is not quite don, we need to consider the same question for the MutexGuard.</p>
@@ -2255,10 +2191,7 @@ Now in the case that <code>T</code> is <code>Send</code> it is enough to deduce 
 <p>TODO table</p>
 <p>Now let us change the code to reflect this:</p>
 <p>TODO Check this with example trait bounds as maybe auto derived and not in docs. Tables</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -2402,8 +2335,7 @@ unsafe impl&lt;'a, T : Sync&gt; Sync for MutexGuard&lt;'a,T&gt; {}
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <h2 id="sized"><a class="header" href="#sized">Sized</a></h2>
 <h3 id="mutex-1"><a class="header" href="#mutex-1">Mutex</a></h3>
 <h3 id="mutexguard-1"><a class="header" href="#mutexguard-1">MutexGuard</a></h3>
@@ -2432,10 +2364,7 @@ TODO minimal panic safe</p>
 <p>If when the MutexGuard is dropped we check if the thread is panicking. If it is we set a flag on the Mutex to note such a fact. Then when future threads try to access we need to notify them that the data has been poisoned and we need to do so while maintaining our safety guarantees.</p>
 <p>In order to implement this we will first need to add an AtomicBool to the Mutex that tracks whether the inner data is poisoned or not. TODO Why AtomicBool</p>
 <p>TODO add AtomicBool and change setup funcs</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">
 </span>pub struct Mutex&lt;T&gt; : Sized {
     lock_mech : LockMech,
@@ -2591,12 +2520,8 @@ TODO minimal panic safe</p>
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+</span></code></pre>
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
@@ -2752,15 +2677,11 @@ TODO minimal panic safe</p>
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>This should allow us to record if it is possible that the inner data has been poisoned.
 And we need to alter the drop TODO rusty method for the MutexGuard to check.</p>
 <p>TODO drop method</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
@@ -2916,8 +2837,7 @@ And we need to alter the drop TODO rusty method for the MutexGuard to check.</p>
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>And we need to alter the locking functions. We will discuss how we can report this to the user in the next section for now we will just panic!().</p>
 <p>TODO locking method change
 TODO does it need to be atomic
@@ -2928,10 +2848,7 @@ TODO how do we unset poison flag</p>
 So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard flag is not set and the thead is panicking.</p>
 <p>Before we implement this we need to ask ourselves some questions: TODO Double panic, catch_unwind</p>
 <p>TODO implement changes to MutexGuard and functions</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -3086,12 +3003,8 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+</span></code></pre>
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -3246,12 +3159,8 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+</span></code></pre>
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -3406,15 +3315,11 @@ So we set the Mutex poison flag  on the drop of the MutexGuard if the MutexGuard
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO Send questions check all correct in previous chapters</p>
 <p>We also need the MutexGuard !Send TODO rusty in all cases. This is as we are now storing a thread specific data in the MutexGuard.</p>
 <p>TODO make not Send</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">compiler_error!(ensure sized , past are changed )
+<pre><code class="language-rust ignore"><span class="boring">compiler_error!(ensure sized , past are changed )
 </span><span class="boring">pub struct Mutex&lt;T&gt; : Sized {
 </span><span class="boring">    lock_mech : LockMech,
 </span><span class="boring">    data : UnsafeCell&lt;T&gt;,
@@ -3569,8 +3474,7 @@ Unsafe impl&lt;'a, T : Sync&gt; Sync for MutexGuard&lt;'a,T&gt;
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO why safe</p>
 <p>TODO safety</p>
 <p>We now have protected from poisoning and is now time for us to work out how to tell the user their data is possibly poisoned.</p>

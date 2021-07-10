@@ -151,10 +151,7 @@ If you want to examine how we can create a Mutex using these features you can ch
 <p>Our <code>Mutex</code> will utilise an <a href="https://doc.rust-lang.org/std/sync/atomic/struct.AtomicBool.html"><code>AtomicBool</code></a> which has been exposed by Rust's std. This type is only available on platforms that support atomic loads and stores of <code>u8</code>. This should cover most platforms.</p>
 <h2 id="atomics"><a class="header" href="#atomics">Atomics</a></h2>
 <p>The <a href="https://doc.rust-lang.org/std/sync/atomic/struct.AtomicBool.html"><code>AtomicBool</code></a> will be the core of our lock. When no one has a <code>MutexGuard</code> the bool will be <code>false</code> and when one exists it will be <code>true</code>. So let's import the appropriate modules and alter the <code>LockMech</code> struct.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -284,13 +281,9 @@ use std::hint;
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>For the <code>fn new() -&gt; LockMech</code> method we will simply create an <code>AtomicBool</code> with the initial value <code>false</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -420,15 +413,11 @@ use std::hint;
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>The <code>fn unlock(&amp;self)</code> function is also relatively simple as we will simply use the <code>fn store(&amp;self, val: bool, order: Ordering)</code> method with <code>val</code> set to <code>false</code> from the AtomicBool library to change it from <code>true</code> to <code>false</code>.
 We will talk about the ordering in a moment.
 TODO change ordering</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -558,15 +547,11 @@ TODO change ordering</p>
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>Now we need to complete the lock functions.
 The lock functions we need to be more complex as the methods must read the bool and if the bool is <code>false</code> we set it to <code>true</code> then alert us to this action but if the bool is <code>true</code> then we do nothing and alert ourselves to the fact all of which must be done atomically.</p>
 <p>For <code>fn lock(&amp;self)</code> we will repeatedly call the <code>fn try_lock(&amp;self) -&gt; bool</code> function in a loop and only return when <code>try_lock</code> returns <code>true</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -696,18 +681,14 @@ The lock functions we need to be more complex as the methods must read the bool 
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO add hint::spin_lock() and link</p>
 <p>The function <code>std::hint::spin_loop()</code> is a standard library function that signals to the processor that it is running in a busy-wait spin-loop if the capability is available on the target platform and does nothing if it is not.</p>
 <p>Now we just need to complete the <code>fn try_lock(&amp;self) -&gt; bool</code> function.
 The <code>fn swap(&amp;self, val: bool, order: Ordering) -&gt; bool</code> from <code>AtomicBool</code>'s library with <code>val</code> set to <code>true</code> will give us the correct behavior.</p>
 <p>If the Mutex is not locked then the <code>LockMech</code>'s bool is <code>false</code>, <code>swap</code> will change the value to <code>true</code> and return <code>false</code>. Hence acquiring the lock and by taking the logical not of the output of <code>swap</code> we get our desired output.</p>
 <p>If the Mutex is locked then the <code>LockMech</code>'s bool is <code>true</code>, <code>swap</code> will do nothing to the value, so it remains <code>true</code> and the <code>swap</code> function returns <code>true</code>. So just by taking the logical not of this we can finish our <code>try_lock</code> method.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -837,8 +818,7 @@ The <code>fn swap(&amp;self, val: bool, order: Ordering) -&gt; bool</code> from 
 </span><span class="boring">        unsafe{&amp;mut *self.mu.data.get()}
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO change to swap and size_hint() and spin lock</p>
 <h2 id="orderings"><a class="header" href="#orderings">Orderings</a></h2>
 <p>TODO orderings</p>

@@ -149,10 +149,7 @@
 By also implementing the <code>drop</code> trait to unlock the <code>Mutex</code> when we are done.</p>
 <p>So lets implement it.</p>
 <p>We create the <code>MutexGuard</code> and its associated methods:</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span>use std::ops::{Drop, Deref, DerefMut};
 
@@ -266,13 +263,9 @@ impl&lt;'a, T:Sized&gt; DerefMut for MutexGuard&lt;'a,T&gt; {
         &amp;mut self.mu.data
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>And we alter the methods on the <code>Mutex</code> to return a <code>MutexGuard</code>.</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">
@@ -386,8 +379,7 @@ impl&lt;'a, T:Sized&gt; DerefMut for MutexGuard&lt;'a,T&gt; {
 </span><span class="boring">        &amp;mut self.mu.data
 </span><span class="boring">    }
 </span><span class="boring">}
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>That was relatively simple so lets move on to the next problem.</p>
 
                     </main>

@@ -156,10 +156,7 @@ However if <code>T</code> is just <code>Sync</code> then this is not enough as w
 <p>The above reasoning is summarized in the table below TODO table.</p>
 <p>And we can alter are code to reflect this.</p>
 <p>TODO code, table</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -303,8 +300,7 @@ unsafe impl&lt;T : Send&gt; Send for Mutex&lt;T&gt; {}
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <p>TODO atomicbool thread safe? explain in all cases</p>
 <h3 id="mutexguard"><a class="header" href="#mutexguard">MutexGuard</a></h3>
 <p>The issue of <code>Sync</code> and <code>Send</code> however is not quite don, we need to consider the same question for the MutexGuard.</p>
@@ -316,10 +312,7 @@ Now in the case that <code>T</code> is <code>Send</code> it is enough to deduce 
 <p>TODO table</p>
 <p>Now let us change the code to reflect this:</p>
 <p>TODO Check this with example trait bounds as maybe auto derived and not in docs. Tables</p>
-<pre><pre class="playground"><code class="language-rust edition2018">
-<span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span><span class="boring">#![feature(negative_impls)]
+<pre><code class="language-rust ignore"><span class="boring">#![feature(negative_impls)]
 </span><span class="boring">use std::ops::{Drop, Deref, DerefMut};
 </span><span class="boring">use std::cell::UnsafeCell;
 </span><span class="boring">
@@ -463,8 +456,7 @@ unsafe impl&lt;'a, T : Sync&gt; Sync for MutexGuard&lt;'a,T&gt; {}
 </span><span class="boring">
 </span><span class="boring">
 </span><span class="boring">
-</span><span class="boring">}
-</span></code></pre></pre>
+</span></code></pre>
 <h2 id="sized"><a class="header" href="#sized">Sized</a></h2>
 <h3 id="mutex-1"><a class="header" href="#mutex-1">Mutex</a></h3>
 <h3 id="mutexguard-1"><a class="header" href="#mutexguard-1">MutexGuard</a></h3>
