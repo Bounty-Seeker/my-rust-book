@@ -19,7 +19,7 @@ The above reasoning is summarized in the table below TODO table.
 And we can alter are code to reflect this.
 
 TODO code, table
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_sized_sync_send/mutex_sync_send.rs:mutex_send_sync}}
 ```
 
@@ -41,7 +41,7 @@ Now let us change the code to reflect this:
 
 TODO Check this with example trait bounds as maybe auto derived and not in docs. Tables
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_sized_sync_send/mutex_sync_send.rs:mutex_guard_send_sync}}
 ```
 

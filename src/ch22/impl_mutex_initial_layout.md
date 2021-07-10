@@ -12,7 +12,7 @@ The data field shall hold our data while the `LockMech` struct will handle acces
 
 Our Mutex will also need some methods:
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_initial_layout/mutex_initial_layout.rs:here}}
 ```
 This gives us the core functionality expected from a Mutex. This should be enough for our purpose and can easily be expanded to give further functionality.
@@ -21,13 +21,13 @@ TODO  Sized, pub
 
 We can also create the following methods for our `LockMech` struct.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_initial_layout/mutex_initial_layout2.rs:here2}}
 ```
 
 Now using these functions we can now complete the bodies of our associated methods on the Mutex struct.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_initial_layout/mutex_initial_layout2.rs:here}}
 ```
 

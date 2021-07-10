@@ -9,13 +9,13 @@ So lets implement it.
 
 We create the `MutexGuard` and its associated methods:
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_guard/mutex_guard_intro.rs:here}}
 ```
 
 And we alter the methods on the `Mutex` to return a `MutexGuard`.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_guard/mutex_guard_intro.rs:here2}}
 ```
 

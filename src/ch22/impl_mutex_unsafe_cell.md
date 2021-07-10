@@ -9,7 +9,7 @@ In order to solve this we will change all the previous functions to only require
 The compiler will let us give out multiple shared references quite happily.
 This will give us:
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_unsafecell/mutex_unsafecell_intro.rs:here}}
 ```
 TODO set doesn't compiler on import in mdbook md text when we test
@@ -22,7 +22,7 @@ TODO compiler error
 ```
 So we need to make the same change in the functions of our internal structs.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_unsafecell/mutex_unsafecell_intro2.rs:here}}
 ```
 
@@ -45,17 +45,17 @@ It also gives us the correct behavior from the drop checker and the correct vari
 
 So lets change our `Mutex<T>`'s data field to `UnsafeCell<T>` to take advantage of this behavior.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_unsafecell/mutex_unsafecell.rs:here}}
 ```
 And we also make changes to the appropriate functions:
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_unsafecell/mutex_unsafecell.rs:here2}}
 ```
 Also we need to alter the deref functions for the `MutexGuard`:
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_unsafecell/mutex_unsafecell.rs:here3}}
 ```
 

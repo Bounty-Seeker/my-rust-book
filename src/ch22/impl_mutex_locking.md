@@ -11,13 +11,13 @@ Our `Mutex` will utilise an [`AtomicBool`][atmbool] which has been exposed by Ru
 ## Atomics
 The [`AtomicBool`][atmbool] will be the core of our lock. When no one has a `MutexGuard` the bool will be `false` and when one exists it will be `true`. So let's import the appropriate modules and alter the `LockMech` struct.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech}}
 ```
 
 For the `fn new() -> LockMech` method we will simply create an `AtomicBool` with the initial value `false`.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_new}}
 ```
 
@@ -25,7 +25,7 @@ The `fn unlock(&self)` function is also relatively simple as we will simply use 
 We will talk about the ordering in a moment.
 TODO change ordering
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_unlock}}
 ```
 
@@ -34,7 +34,7 @@ The lock functions we need to be more complex as the methods must read the bool 
 
 For `fn lock(&self)` we will repeatedly call the `fn try_lock(&self) -> bool` function in a loop and only return when `try_lock` returns `true`.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_lock}}
 ```
 
@@ -49,7 +49,7 @@ If the Mutex is not locked then the `LockMech`'s bool is `false`, `swap` will ch
 
 If the Mutex is locked then the `LockMech`'s bool is `true`, `swap` will do nothing to the value, so it remains `true` and the `swap` function returns `true`. So just by taking the logical not of this we can finish our `try_lock` method.
 
-```rust
+```rust, ignore
 {{#rustdoc_include ./code/impl_mutex_lock/mutex_locking.rs:lock_mech_try_lock}}
 ```
 
